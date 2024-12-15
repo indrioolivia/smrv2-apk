@@ -26,10 +26,15 @@ object NetworkModule {
                 level = HttpLoggingInterceptor.Level.BASIC
             })
             .addInterceptor { chain ->
+                val request = chain.request()
                 try {
-                    chain.proceed(chain.request())
+                    val response = chain.proceed(request)
+                    if (!response.isSuccessful) {
+                        throw IOException("HTTP ${response.code}: ${response.message}")
+                    }
+                    response
                 } catch (e: Exception) {
-                    throw IOException("Network error: ${e.message}", e)
+                    throw IOException("Network error for ${request.url}: ${e.message}", e)
                 }
             }
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -41,14 +46,15 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        val gson = GsonBuilder()
+            .setLenient()
+            .serializeNulls()
+            .create()
+            
         return Retrofit.Builder()
             .baseUrl("https://simeru-scraper.koyeb.app/")
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create(
-                GsonBuilder()
-                    .setLenient()
-                    .create()
-            ))
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
     }
 
