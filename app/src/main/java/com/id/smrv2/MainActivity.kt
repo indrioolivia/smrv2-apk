@@ -66,6 +66,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Divider
+import com.id.smrv2.utils.TimeConverter
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -332,66 +337,10 @@ fun ScheduleScreen(viewModel: ScheduleViewModel) {
                 }
             } else {
                 items(uiState.schedules) { schedule ->
-                    ScheduleItem(schedule = schedule)
+                    ScheduleItem(schedule)
+                    Divider()
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun ScheduleItem(schedule: Schedule) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(vertical = 8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent,
-        ),
-        shape = RoundedCornerShape(8.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(16.dp)
-        ) {
-            // Course name
-            Text(
-                text = schedule.course,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            
-            // Code and Class
-            Text(
-                text = "Kode: ${schedule.code} • Kelas ${schedule.className}",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            
-            // Lecturer
-            Text(
-                text = "Dosen: ${schedule.lecturer}",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            
-            // Room and Hours
-            Text(
-                text = "Ruang: ${schedule.room} • Hari: ${schedule.day} • Jam ke-${schedule.hours}",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            // Credits and Semester
-            Text(
-                text = "SKS: ${schedule.credits} • Semester: ${schedule.semester}",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
     }
 }
