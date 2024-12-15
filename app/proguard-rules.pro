@@ -54,3 +54,63 @@
 -keep interface okhttp3.** { *; }
 -dontwarn okhttp3.**
 -dontwarn okio.**
+
+# Keep API-related classes
+-keep class com.id.smrv2.data.remote.** { *; }
+-keep class com.id.smrv2.domain.model.** { *; }
+-keep class com.id.smrv2.domain.repository.** { *; }
+-keep class com.id.smrv2.domain.usecase.** { *; }
+
+# Keep Retrofit interfaces
+-keep,allowobfuscation interface * {
+    @retrofit2.http.* <methods>;
+}
+
+# Keep Retrofit response classes
+-keepclassmembers class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+
+# Keep Hilt-related classes
+-keep class dagger.hilt.** { *; }
+-keep class javax.inject.** { *; }
+-keep class * extends dagger.hilt.android.lifecycle.HiltViewModel
+
+# Keep Coroutines
+-keepclassmembers class kotlinx.coroutines.** {
+    volatile <fields>;
+}
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}
+
+# Keep Gson Generic Types
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class sun.misc.Unsafe { *; }
+-keep class com.google.gson.** { *; }
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+
+# OkHttp
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn javax.annotation.**
+-keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
+
+# Keep your API Service interface
+-keep class com.id.smrv2.data.remote.ApiService {
+    *;
+}
+
+# Keep Schedule and related models
+-keep class com.id.smrv2.domain.model.Schedule {
+    *;
+}
+
+# Keep enum classes
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
