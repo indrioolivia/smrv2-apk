@@ -1,8 +1,8 @@
 package com.id.smrv2.presentation.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -11,19 +11,19 @@ sealed class NavigationItem(
     val title: String,
     val icon: ImageVector
 ) {
-    object Home : NavigationItem(
+    data object Home : NavigationItem(
         route = "home",
         title = "Home",
         icon = Icons.Default.Home
     )
     
-    object MySchedule : NavigationItem(
+    data object MySchedule : NavigationItem(
         route = "my_schedule",
         title = "My Schedule",
-        icon = Icons.Default.List
+        icon = Icons.AutoMirrored.Filled.List
     )
     
-    object Profile : NavigationItem(
+    data object Profile : NavigationItem(
         route = "profile",
         title = "Profile",
         icon = Icons.Default.Person

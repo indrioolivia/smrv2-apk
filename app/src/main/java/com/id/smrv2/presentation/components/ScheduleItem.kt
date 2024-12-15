@@ -30,8 +30,7 @@ import com.id.smrv2.utils.TimeConverter
 
 @Composable
 fun ScheduleItem(
-    schedule: Schedule,
-    modifier: Modifier = Modifier
+    schedule: Schedule
 ) {
     var expanded by remember { mutableStateOf(false) }
     
@@ -40,6 +39,7 @@ fun ScheduleItem(
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clickable { expanded = !expanded },
+        border = CardDefaults.outlinedCardBorder(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
@@ -110,9 +110,9 @@ fun ScheduleItem(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
-                    // Credits and Semester
+                    // Semester and Credits
                     Text(
-                        text = "SKS: ${schedule.credits} • Semester: ${schedule.semester}",
+                        text = "Semester ${schedule.semester} • ${schedule.credits} SKS",
                         fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
