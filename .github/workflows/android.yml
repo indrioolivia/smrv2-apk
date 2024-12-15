@@ -35,7 +35,7 @@ jobs:
         ENCODED_KEYSTORE: ${{ secrets.KEYSTORE }}
       run: |
         if [ -n "$ENCODED_KEYSTORE" ]; then
-          echo $ENCODED_KEYSTORE | base64 -d > app/release.keystore
+          echo $ENCODED_KEYSTORE | base64 -d > release.keystore
         else
           echo "KEYSTORE secret is not set. Skipping release build."
           exit 1
@@ -48,12 +48,8 @@ jobs:
         KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       run: |
-        if [ -f app/release.keystore ]; then
-          ./gradlew assembleRelease \
-            -Pandroid.injected.signing.store.file=release.keystore \
-            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
-            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
-            -Pandroid.injected.signing.key.password=$KEY_PASSWORD
+        if [ -f release.keystore ]; then
+          ./gradlew assembleRelease
         fi
 
     - name: Upload Debug APK

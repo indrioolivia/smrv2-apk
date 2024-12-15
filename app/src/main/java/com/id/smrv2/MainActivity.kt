@@ -67,10 +67,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Divider
 import com.id.smrv2.utils.TimeConverter
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.clickable
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
