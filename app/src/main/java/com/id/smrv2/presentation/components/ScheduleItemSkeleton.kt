@@ -13,14 +13,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -41,62 +42,73 @@ fun ScheduleItemSkeleton(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .padding(vertical = 8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 2.dp
+        )
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                    .height(24.dp)
-                    .background(Color.Gray.copy(alpha = alpha), RoundedCornerShape(4.dp))
-            )
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            Row {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    // Course name skeleton
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.7f)
+                            .height(20.dp)
+                            .background(
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = alpha),
+                                RoundedCornerShape(4.dp)
+                            )
+                    )
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    // Class and Room skeleton
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.6f)
+                            .height(16.dp)
+                            .background(
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha),
+                                RoundedCornerShape(4.dp)
+                            )
+                    )
+                    
+                    Spacer(modifier = Modifier.height(4.dp))
+                    
+                    // Day and Hours skeleton
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .height(16.dp)
+                            .background(
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha),
+                                RoundedCornerShape(4.dp)
+                            )
+                    )
+                }
+                
+                // Arrow icon skeleton
                 Box(
                     modifier = Modifier
-                        .width(100.dp)
-                        .height(16.dp)
-                        .background(Color.Gray.copy(alpha = alpha), RoundedCornerShape(4.dp))
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Box(
-                    modifier = Modifier
-                        .width(80.dp)
-                        .height(16.dp)
-                        .background(Color.Gray.copy(alpha = alpha), RoundedCornerShape(4.dp))
-                )
-            }
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .height(16.dp)
-                    .background(Color.Gray.copy(alpha = alpha), RoundedCornerShape(4.dp))
-            )
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            Row {
-                Box(
-                    modifier = Modifier
-                        .width(120.dp)
-                        .height(16.dp)
-                        .background(Color.Gray.copy(alpha = alpha), RoundedCornerShape(4.dp))
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Box(
-                    modifier = Modifier
-                        .width(80.dp)
-                        .height(16.dp)
-                        .background(Color.Gray.copy(alpha = alpha), RoundedCornerShape(4.dp))
+                        .size(24.dp)
+                        .background(
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha),
+                            RoundedCornerShape(4.dp)
+                        )
                 )
             }
         }

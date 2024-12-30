@@ -13,3 +13,26 @@
 .externalNativeBuild
 .cxx
 local.properties
+release.keystore
+*.keystore
+keystore-encoded.txt
+app/release.keystore
+app/debug.keystore
+*.aab
+*.apk
++ /.idea/
++ /.idea/misc.xml
++ /.idea/compiler.xml
++ /.idea/gradle.xml
++ /.idea/kotlinc.xml
++ /.idea/vcs.xml
++ /.idea/inspectionProfiles/
++ /.idea/.name
++ /.idea/.gitignore
++ /.idea/deploymentTargetDropDown.xml
++ /app/release/
++ /app/debug/
++ /app/build/
++ *.log
++ .env
++ google-services.json

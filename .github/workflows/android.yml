@@ -1,0 +1,97 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ "main" ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Extract version from tag
+      id: get_version
+      run: |
+        if [[ $GITHUB_REF == refs/tags/* ]]; then
+          echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        else
+          echo "VERSION=0.0.0" >> $GITHUB_OUTPUT
+        fi
+      
+    - name: Build Debug APK
+      run: ./gradlew assembleDebug
+
+    # Only run release build on tag pushes
+    - name: Decode Keystore
+      if: startsWith(github.ref, 'refs/tags/')
+      env:
+        ENCODED_KEYSTORE: ${{ secrets.KEYSTORE }}
+      run: |
+        if [ -n "$ENCODED_KEYSTORE" ]; then
+          echo $ENCODED_KEYSTORE | base64 -d > release.keystore
+        else
+          echo "KEYSTORE secret is not set. Skipping release build."
+          exit 1
+        fi
+
+    - name: Build Release APK
+      if: startsWith(github.ref, 'refs/tags/')
+      env:
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      run: |
+        if [ -f release.keystore ]; then
+          ./gradlew assembleRelease
+        fi
+
+    - name: Rename APKs
+      run: |
+        VERSION=${{ steps.get_version.outputs.VERSION }}
+        mv app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/smrv2_${VERSION}_debug.apk
+        if [ -f app/build/outputs/apk/release/app-release.apk ]; then
+          mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/smrv2_${VERSION}_release.apk
+        fi
+
+    - name: Upload Debug APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: smrv2_${{ steps.get_version.outputs.VERSION }}_debug
+        path: app/build/outputs/apk/debug/smrv2_${{ steps.get_version.outputs.VERSION }}_debug.apk
+        retention-days: 7
+
+    - name: Upload Release APK
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: actions/upload-artifact@v3
+      with:
+        name: smrv2_${{ steps.get_version.outputs.VERSION }}_release
+        path: app/build/outputs/apk/release/smrv2_${{ steps.get_version.outputs.VERSION }}_release.apk
+        retention-days: 30
+
+    # Create GitHub Release
+    - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          app/build/outputs/apk/release/smrv2_${{ steps.get_version.outputs.VERSION }}_release.apk
+          app/build/outputs/apk/debug/smrv2_${{ steps.get_version.outputs.VERSION }}_debug.apk
+        draft: false
+        prerelease: false
+        
