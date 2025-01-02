@@ -21,7 +21,9 @@ data class ScheduleUiState(
     val schedules: List<Schedule> = emptyList(),
     val days: List<String> = listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"),
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val searchQuery: String = "",
+    val filteredSchedules: List<Schedule> = emptyList()
 )
 
 @HiltViewModel
@@ -110,6 +112,30 @@ class ScheduleViewModel @Inject constructor(
                         error = "Failed to load schedules: ${e.message}"
                     )
                 }
+            }
+        }
+    }
+
+    fun onSearchQueryChanged(query: String) {
+        viewModelScope.launch {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    searchQuery = query,
+                    filteredSchedules = if (query.isBlank()) {
+                        currentState.schedules
+                    } else {
+                        currentState.schedules.filter { schedule ->
+                            schedule.day.contains(query, ignoreCase = true) ||
+                                    schedule.code.contains(query, ignoreCase = true) ||
+                                    schedule.course.contains(query, ignoreCase = true) ||
+                                    schedule.className.contains(query, ignoreCase = true) ||
+                                    schedule.credits.contains(query, ignoreCase = true) ||
+                                    schedule.semester.contains(query, ignoreCase = true) ||
+                                    schedule.lecturer.contains(query, ignoreCase = true) ||
+                                    schedule.room.contains(query, ignoreCase = true)
+                        }
+                    }
+                )
             }
         }
     }

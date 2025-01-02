@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
@@ -227,20 +228,6 @@ fun ScheduleScreen(viewModel: ScheduleViewModel) {
                     modifier = Modifier.padding(bottom = 24.dp)
                 )
 
-                if (uiState.isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-
-                uiState.error?.let { error ->
-                    Text(
-                        text = error,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
-                }
-
                 // Searchable Prodi Dropdown
                 ExposedDropdownMenuBox(
                     expanded = isProdiExpanded,
@@ -315,21 +302,51 @@ fun ScheduleScreen(viewModel: ScheduleViewModel) {
                     onClick = { viewModel.searchSchedule() },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp)
                 ) {
                     Text("Search")
+                }
+
+                uiState.error?.let { error ->
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    Text(
+                        text = error,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            // Show loading skeletons or results
+            // Show loading skeletons
             if (uiState.isLoading) {
                 items(5) {
                     ScheduleItemSkeleton()
                 }
-            } else {
-                items(uiState.schedules) { schedule ->
+            } else if (uiState.schedules.isNotEmpty()) {
+                // Show search field only when we have results
+                item {
+                    OutlinedTextField(
+                        value = uiState.searchQuery,
+                        onValueChange = { viewModel.onSearchQueryChanged(it) },
+                        label = { Text("Search in results") },
+                        placeholder = { Text("Search by course, lecturer, or room") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        singleLine = true,
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search"
+                            )
+                        }
+                    )
+                }
+
+                // Show filtered results
+                items(uiState.filteredSchedules.ifEmpty { uiState.schedules }) { schedule ->
                     ScheduleItem(schedule)
                     HorizontalDivider(thickness = 0.5.dp)
                 }
